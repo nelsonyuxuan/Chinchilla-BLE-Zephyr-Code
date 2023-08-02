@@ -86,9 +86,10 @@ static struct bt_uuid_128 vnd_auth_uuid = BT_UUID_INIT_128(
 #define VND_MAX_LEN 20
 
 /* Is the problem static? */
-static uint8_t vnd_value[VND_MAX_LEN + 1] = { 'V', 'e', 'n', 'd', 'o', 'r'};
-static uint8_t vnd_auth_value[VND_MAX_LEN + 1] = { 'V', 'e', 'n', 'd', 'o', 'r'};
-static uint8_t vnd_wwr_value[VND_MAX_LEN + 1] = { 'V', 'e', 'n', 'd', 'o', 'r' };
+// static uint8_t vnd_value[VND_MAX_LEN + 1] = { 'V', 'e', 'n', 'd', 'o', 'r'};
+static uint8_t vnd_value[VND_MAX_LEN + 1] = {"0000 0000 0000 0000"};
+static uint8_t vnd_auth_value[VND_MAX_LEN + 1] = {"0000 0000 0000 0000"};
+static uint8_t vnd_wwr_value[VND_MAX_LEN + 1] = {"0000 0000 0000 0000"};
 
 /* The handler of the reading, the buffer contains the data to write, and len contains the length of the data */
 static ssize_t read_vnd(struct bt_conn *conn, const struct bt_gatt_attr *attr,
