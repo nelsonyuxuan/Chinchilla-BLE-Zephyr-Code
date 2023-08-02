@@ -1,0 +1,2 @@
+osource "/Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/boards/shields/*/Kconfig.defconfig"
+osource "/opt/nordic/ncs/v2.4.0/nrf/boards/shields/*/Kconfig.defconfig"
