@@ -28383,9 +28383,9 @@ void mtu_updated(struct bt_conn *conn, uint16_t tx, uint16_t rx)
    116ec:	0002a9ac 	.word	0x0002a9ac
 
 000116f0 <disconnected>:
-	}
 }
 
+/* Same as the connected struct above */
 static void disconnected(struct bt_conn *conn, uint8_t reason)
 {
 	printk("Disconnected (reason 0x%02x)\n", reason);
@@ -28408,9 +28408,9 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
    11710:	0002aa0c 	.word	0x0002aa0c
 
 00011714 <main>:
-	/* Canel ongoing pairing process */
-	.cancel = auth_cancel,
-};
+
+	printk("Advertising successfully started\n");
+}
 
 int main(void)
 {

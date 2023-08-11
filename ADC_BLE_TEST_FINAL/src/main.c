@@ -54,9 +54,6 @@ static const struct adc_dt_spec adc_channels[] = {
 /* From Celia's code, converts the string format to the BT_UUID_128_ENCODE() format */
 
 /* Previously successful version of the characteristic value */
-// #define BT_UUID_CUSTOM_SERVICE_VAL \
-// 	BT_UUID_128_ENCODE(0xA3E0539E, 0x3CF8, 0x867E, 0x2B7B, 0x1EE451EC384B)
-
 /* Based on the print out of Celia's code */
 /* No much difference, will need to modify later */
 #define BT_UUID_CUSTOM_SERVICE_VAL \
@@ -83,7 +80,6 @@ static struct bt_uuid_128 vnd_auth_uuid = BT_UUID_INIT_128(
 #define VND_MAX_LEN 20
 
 /* Is the problem static? */
-// static uint8_t vnd_value[VND_MAX_LEN + 1] = { 'V', 'e', 'n', 'd', 'o', 'r'};
 static uint8_t vnd_value[VND_MAX_LEN + 1] = {"0000 0000 0000 0001"};
 static uint8_t vnd_auth_value[VND_MAX_LEN + 1] = {"0000 0000 0000 0002"};
 
@@ -153,6 +149,7 @@ BT_GATT_SERVICE_DEFINE(vnd_svc,
 			       read_vnd, NULL, vnd_value)
 );
 
+/* Bluetooth related parameters */
 static const struct bt_data ad[] = {
 	BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
 	BT_DATA_BYTES(BT_DATA_UUID16_ALL,
@@ -175,6 +172,7 @@ static struct bt_gatt_cb gatt_callbacks = {
 
 };
 
+/* Will print to the serial monitor for connection, can be further trimmed down with UART turning off */
 static void connected(struct bt_conn *conn, uint8_t err)
 {
 	if (err) {
@@ -184,12 +182,13 @@ static void connected(struct bt_conn *conn, uint8_t err)
 	}
 }
 
+/* Same as the connected struct above */
 static void disconnected(struct bt_conn *conn, uint8_t reason)
 {
 	printk("Disconnected (reason 0x%02x)\n", reason);
 }
 
-
+/* Indication of the connection status */
 BT_CONN_CB_DEFINE(conn_callbacks) = {
 	.connected = connected,
 	.disconnected = disconnected,
@@ -220,37 +219,6 @@ static void bt_ready(void)
 
 	printk("Advertising successfully started\n");
 }
-
-static void auth_passkey_display(struct bt_conn *conn, unsigned int passkey)
-{
-	char addr[BT_ADDR_LE_STR_LEN];
-
-	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
-
-	printk("Passkey for %s: %06u\n", addr, passkey);
-}
-
-static void auth_cancel(struct bt_conn *conn)
-{
-	char addr[BT_ADDR_LE_STR_LEN];
-
-	/* Gets the address of the remote device in the connection as a string */
-	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
-
-	printk("Pairing cancelled: %s\n", addr);
-}
-
-/* Registers callback handlers for authentication events like pairing */
-static struct bt_conn_auth_cb auth_cb_display = {
-	/* Show passkey during pairing */
-	.passkey_display = auth_passkey_display,
-
-	/* Enter passkey received from peer */
-	.passkey_entry = NULL,
-
-	/* Canel ongoing pairing process */
-	.cancel = auth_cancel,
-};
 
 int main(void)
 {
@@ -294,9 +262,6 @@ int main(void)
 
 	/* Registers a set of callback functions for GATT events */
 	bt_gatt_cb_register(&gatt_callbacks);
-
-	/* Registers callbacks for authentication events like pairing */
-	// bt_conn_auth_cb_register(&auth_cb_display);
 
 	/* Find the attribute for the vnd_enc service's characteristic UUID */
 	/* In this case, use the attribute of the specific characteristic that was updated, not the service's general UUID */
@@ -349,39 +314,15 @@ int main(void)
 	
 			err = adc_raw_to_millivolts_dt(&adc_channels[i],
 						       &val_mv);
-			/* conversion to mV may not be supported, skip if not */
-			// if (err < 0) {
-			// 	printk(" (value in mV not available)\n");
-			// } else {
-			// 	printk(" = %"PRId32" mV\n", val_mv);
-			// }
 
 			/* Store the ADC result in each of the channel */
 			adc_final_reading[i] = val_mv;
 			
-			/* The printing statement works */
-			// printk("%04d", adc_final_reading[i]);
-			
-			/* Simply transmit the data during ADC reading? */
-			/* Gives an error */
-			// sprintf(vnd_value, val_mv);
 			
 		}
 
-		/* Test printing the entire array */
-		// printk("%04d %04d", adc_final_reading[0], adc_final_reading[1]);
-		// printk("%"PRId32"", adc_final_reading[0]);
-
-		/* Test for loop just for testing the dynamical assginment of the numbers */
-		// for (size_t i = 0U; i < ARRAY_SIZE(adc_channels); i++) {
-		// 	adc_final_reading[i] = i;
-		// }
-
 		/* Update the value of the characteristic */
-		// strcpy(vnd_value, "Values have been updated");
 		sprintf(vnd_value, "%04d %04d %04d %04d", adc_final_reading[0], adc_final_reading[1], adc_final_reading[2], adc_final_reading[3]);
-		// sprintf(vnd_value, "%04d %04d %04d %04d", val1, val2, val3, val4);
-		// sprintf(vnd_value, "%"PRId32" %"PRId32" %"PRId32" %"PRId32"", adc_final_reading[0], adc_final_reading[1], adc_final_reading[2], adc_final_reading[3]);
 		
 		/* Notify connected devices of the change */
 		bt_gatt_notify(NULL, &vnd_ind_attr->uuid, &vnd_value, strlen(vnd_value));
