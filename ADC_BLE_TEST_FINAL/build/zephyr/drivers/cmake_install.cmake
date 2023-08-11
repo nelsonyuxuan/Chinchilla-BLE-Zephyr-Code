@@ -104,11 +104,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/zephyr/drivers/sensor/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
   include("/Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/zephyr/drivers/serial/cmake_install.cmake")
 endif()
 

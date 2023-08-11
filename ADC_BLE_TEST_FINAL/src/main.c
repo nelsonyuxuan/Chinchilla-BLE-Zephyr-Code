@@ -33,9 +33,6 @@
 #include <zephyr/drivers/adc.h>
 #include <zephyr/sys/util.h>
 
-
-#include "cts.h"
-
 /* ADC Initialization Codes */
 #if !DT_NODE_EXISTS(DT_PATH(zephyr_user)) || \
 	!DT_NODE_HAS_PROP(DT_PATH(zephyr_user), io_channels)
@@ -89,7 +86,6 @@ static struct bt_uuid_128 vnd_auth_uuid = BT_UUID_INIT_128(
 // static uint8_t vnd_value[VND_MAX_LEN + 1] = { 'V', 'e', 'n', 'd', 'o', 'r'};
 static uint8_t vnd_value[VND_MAX_LEN + 1] = {"0000 0000 0000 0001"};
 static uint8_t vnd_auth_value[VND_MAX_LEN + 1] = {"0000 0000 0000 0002"};
-static uint8_t vnd_wwr_value[VND_MAX_LEN + 1] = {"0000 0000 0000 0003"};
 
 /* The handler of the reading, the buffer contains the data to write, and len contains the length of the data */
 static ssize_t read_vnd(struct bt_conn *conn, const struct bt_gatt_attr *attr,
@@ -120,117 +116,12 @@ static ssize_t write_vnd(struct bt_conn *conn, const struct bt_gatt_attr *attr,
 }
 
 static uint8_t simulate_vnd;
-static uint8_t indicating;
-static struct bt_gatt_indicate_params ind_params;
 
+
+/* Important for paring. Withouth this, struct bleak client cannot connect to the board */
 static void vnd_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value)
 {
 	simulate_vnd = (value == BT_GATT_CCC_INDICATE) ? 1 : 0;
-}
-
-static void indicate_cb(struct bt_conn *conn,
-			struct bt_gatt_indicate_params *params, uint8_t err)
-{
-	printk("Indication %s\n", err != 0U ? "fail" : "success");
-}
-
-static void indicate_destroy(struct bt_gatt_indicate_params *params)
-{
-	printk("Indication complete\n");
-	indicating = 0U;
-}
-
-#define VND_LONG_MAX_LEN 74
-static uint8_t vnd_long_value[VND_LONG_MAX_LEN + 1] = {
-		  'V', 'e', 'n', 'd', 'o', 'r', ' ', 'd', 'a', 't', 'a', '1',
-		  'V', 'e', 'n', 'd', 'o', 'r', ' ', 'd', 'a', 't', 'a', '2',
-		  'V', 'e', 'n', 'd', 'o', 'r', ' ', 'd', 'a', 't', 'a', '3',
-		  'V', 'e', 'n', 'd', 'o', 'r', ' ', 'd', 'a', 't', 'a', '4',
-		  'V', 'e', 'n', 'd', 'o', 'r', ' ', 'd', 'a', 't', 'a', '5',
-		  'V', 'e', 'n', 'd', 'o', 'r', ' ', 'd', 'a', 't', 'a', '6',
-		  '.', ' ' };
-
-static ssize_t write_long_vnd(struct bt_conn *conn,
-			      const struct bt_gatt_attr *attr, const void *buf,
-			      uint16_t len, uint16_t offset, uint8_t flags)
-{
-	uint8_t *value = attr->user_data;
-
-	if (flags & BT_GATT_WRITE_FLAG_PREPARE) {
-		return 0;
-	}
-
-	if (offset + len > VND_LONG_MAX_LEN) {
-		return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
-	}
-
-	memcpy(value + offset, buf, len);
-	value[offset + len] = 0;
-
-	return len;
-}
-
-static const struct bt_uuid_128 vnd_long_uuid = BT_UUID_INIT_128(
-	BT_UUID_128_ENCODE(0x12345678, 0x1234, 0x5678, 0x1234, 0x56789abcdef3));
-
-static struct bt_gatt_cep vnd_long_cep = {
-	.properties = BT_GATT_CEP_RELIABLE_WRITE,
-};
-
-static int signed_value;
-
-static ssize_t read_signed(struct bt_conn *conn, const struct bt_gatt_attr *attr,
-			   void *buf, uint16_t len, uint16_t offset)
-{
-	const char *value = attr->user_data;
-
-	return bt_gatt_attr_read(conn, attr, buf, len, offset, value,
-				 sizeof(signed_value));
-}
-
-static ssize_t write_signed(struct bt_conn *conn, const struct bt_gatt_attr *attr,
-			    const void *buf, uint16_t len, uint16_t offset,
-			    uint8_t flags)
-{
-	uint8_t *value = attr->user_data;
-
-	if (offset + len > sizeof(signed_value)) {
-		return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
-	}
-
-	memcpy(value + offset, buf, len);
-
-	return len;
-}
-
-static const struct bt_uuid_128 vnd_signed_uuid = BT_UUID_INIT_128(
-	BT_UUID_128_ENCODE(0x13345678, 0x1234, 0x5678, 0x1334, 0x56789abcdef3));
-
-static const struct bt_uuid_128 vnd_write_cmd_uuid = BT_UUID_INIT_128(
-	BT_UUID_128_ENCODE(0x12345678, 0x1234, 0x5678, 0x1234, 0x56789abcdef4));
-
-static ssize_t write_without_rsp_vnd(struct bt_conn *conn,
-				     const struct bt_gatt_attr *attr,
-				     const void *buf, uint16_t len, uint16_t offset,
-				     uint8_t flags)
-{
-	uint8_t *value = attr->user_data;
-
-	if (!(flags & BT_GATT_WRITE_FLAG_CMD)) {
-		/* Write Request received. Reject it since this Characteristic
-		 * only accepts Write Without Response.
-		 */
-		return BT_GATT_ERR(BT_ATT_ERR_WRITE_REQ_REJECTED);
-	}
-
-	if (offset + len > VND_MAX_LEN) {
-		return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
-	}
-
-	memcpy(value + offset, buf, len);
-	value[offset + len] = 0;
-
-	return len;
 }
 
 /* Vendor Primary Service Declaration */
@@ -259,22 +150,7 @@ BT_GATT_SERVICE_DEFINE(vnd_svc,
 				   BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_READ_AUTHEN |
 			       BT_GATT_PERM_READ,
-			       read_vnd, NULL, vnd_value),
-
-	BT_GATT_CHARACTERISTIC(&vnd_long_uuid.uuid, BT_GATT_CHRC_READ |
-			       BT_GATT_CHRC_WRITE | BT_GATT_CHRC_EXT_PROP,
-			       BT_GATT_PERM_READ | BT_GATT_PERM_WRITE |
-			       BT_GATT_PERM_PREPARE_WRITE,
-			       read_vnd, write_long_vnd, &vnd_long_value),
-	BT_GATT_CEP(&vnd_long_cep),
-	BT_GATT_CHARACTERISTIC(&vnd_signed_uuid.uuid, BT_GATT_CHRC_READ |
-			       BT_GATT_CHRC_WRITE | BT_GATT_CHRC_AUTH,
-			       BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
-			       read_signed, write_signed, &signed_value),
-	BT_GATT_CHARACTERISTIC(&vnd_write_cmd_uuid.uuid,
-			       BT_GATT_CHRC_WRITE_WITHOUT_RESP,
-			       BT_GATT_PERM_WRITE, NULL,
-			       write_without_rsp_vnd, &vnd_wwr_value),
+			       read_vnd, NULL, vnd_value)
 );
 
 static const struct bt_data ad[] = {
@@ -286,6 +162,7 @@ static const struct bt_data ad[] = {
 	BT_DATA_BYTES(BT_DATA_UUID128_ALL, BT_UUID_CUSTOM_SERVICE_VAL),
 };
 
+/* Updated when connected to the bluetooth */
 void mtu_updated(struct bt_conn *conn, uint16_t tx, uint16_t rx)
 {
 	printk("Updated MTU: TX: %d RX: %d bytes\n", tx, rx);
@@ -312,37 +189,16 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 	printk("Disconnected (reason 0x%02x)\n", reason);
 }
 
-static void alert_stop(void)
-{
-	printk("Alert stopped\n");
-}
-
-static void alert_start(void)
-{
-	printk("Mild alert started\n");
-}
-
-static void alert_high_start(void)
-{
-	printk("High alert started\n");
-}
 
 BT_CONN_CB_DEFINE(conn_callbacks) = {
 	.connected = connected,
 	.disconnected = disconnected,
 };
 
-BT_IAS_CB_DEFINE(ias_callbacks) = {
-	.no_alert = alert_stop,
-	.mild_alert = alert_start,
-	.high_alert = alert_high_start,
-};
-
 static void bt_ready(void)
 {
 	int err;
 
-	cts_init();
 
 	if (IS_ENABLED(CONFIG_SETTINGS)) {
 		settings_load();
@@ -396,32 +252,6 @@ static struct bt_conn_auth_cb auth_cb_display = {
 	.cancel = auth_cancel,
 };
 
-static void bas_notify(void)
-{
-	uint8_t battery_level = bt_bas_get_battery_level();
-
-	battery_level--;
-
-	if (!battery_level) {
-		battery_level = 100U;
-	}
-
-	bt_bas_set_battery_level(battery_level);
-}
-
-static void hrs_notify(void)
-{
-	static uint8_t heartrate = 90U;
-
-	/* Heartrate measurements simulation */
-	heartrate++;
-	if (heartrate == 160U) {
-		heartrate = 90U;
-	}
-
-	bt_hrs_notify(heartrate);
-}
-
 int main(void)
 {
 	struct bt_gatt_attr *vnd_ind_attr;
@@ -450,12 +280,6 @@ int main(void)
 		}
 	}
 
-	/* Test integers to print */
-	int val1 = 1234;
-	int val2 = 5678;
-	int val3 = 9101;
-	int val4 = 1121;
-
 	/* Initializes the buetooth stack */
 	err = bt_enable(NULL);
 	if (err) {
@@ -472,7 +296,7 @@ int main(void)
 	bt_gatt_cb_register(&gatt_callbacks);
 
 	/* Registers callbacks for authentication events like pairing */
-	bt_conn_auth_cb_register(&auth_cb_display);
+	// bt_conn_auth_cb_register(&auth_cb_display);
 
 	/* Find the attribute for the vnd_enc service's characteristic UUID */
 	/* In this case, use the attribute of the specific characteristic that was updated, not the service's general UUID */
@@ -484,68 +308,53 @@ int main(void)
 	bt_uuid_to_str(&vnd_enc_uuid.uuid, str, sizeof(str));
 	printk("Indicate VND attr %p (UUID %s)\n", vnd_ind_attr, str);
 
+	/* Find the attribute of reading from the corresponding UUID */
+	// read_attr = bt_gatt_find_by_uuid(vnd_svc.attrs, vnd_svc.attr_count,
+	// 				    &vnd_auth_uuid.uuid);
+
 	int32_t adc_final_reading[ARRAY_SIZE(adc_channels)];
 
 	/* Implement notification. At the moment there is no suitable way
 	 * of starting delayed work so we do it here
 	 */
+
+	// NRF_UART0->ENABLE = 0;
+
 	while (1) {
 		k_sleep(K_SECONDS(1));
 
-		/* Initializes four readings for four channels */
-		// int32_t adc_final_reading[4] = {0000, 0000, 0000, 0000};
 
-
-		// bt_gatt_cb_register(&gatt_callbacks);
-
-		// /* Current Time Service updates only when time is changed */
-		// cts_notify();
-
-		// /* Heartrate measurements simulation */
-		// hrs_notify();
-
-		// /* Battery level simulation */
-		// bas_notify();
-
-		/* Print to the serial monitor "Hello World" with the printing counts */
-		// printk("Hello World %d\n", k_cycle_get_32());
-
-		/* Print ADC measurements and data */
-		printk("ADC reading[%u]:\n", count++);
 		for (size_t i = 0U; i < ARRAY_SIZE(adc_channels); i++) {
+
 			int32_t val_mv;
 
-			printk("- %s, channel %d: ",
-			       adc_channels[i].dev->name,
-			       adc_channels[i].channel_id);
 
 			(void)adc_sequence_init_dt(&adc_channels[i], &sequence);
 
 			err = adc_read(adc_channels[i].dev, &sequence);
-			if (err < 0) {
-				printk("Could not read (%d)\n", err);
-				continue;
-			}
+
 
 			/*
 			 * If using differential mode, the 16 bit value
 			 * in the ADC sample buffer should be a signed 2's
 			 * complement value.
 			 */
-			if (adc_channels[i].channel_cfg.differential) {
-				val_mv = (int32_t)((int16_t)buf);
-			} else {
-				val_mv = (int32_t)buf;
-			}
-			printk("%"PRId32, val_mv);
+			// if (adc_channels[i].channel_cfg.differential) {
+			// 	val_mv = (int32_t)((int16_t)buf);
+			// } else {
+			// 	val_mv = (int32_t)buf;
+			// }
+
+			val_mv = (int32_t)buf;
+	
 			err = adc_raw_to_millivolts_dt(&adc_channels[i],
 						       &val_mv);
 			/* conversion to mV may not be supported, skip if not */
-			if (err < 0) {
-				printk(" (value in mV not available)\n");
-			} else {
-				printk(" = %"PRId32" mV\n", val_mv);
-			}
+			// if (err < 0) {
+			// 	printk(" (value in mV not available)\n");
+			// } else {
+			// 	printk(" = %"PRId32" mV\n", val_mv);
+			// }
 
 			/* Store the ADC result in each of the channel */
 			adc_final_reading[i] = val_mv;
@@ -577,22 +386,6 @@ int main(void)
 		/* Notify connected devices of the change */
 		bt_gatt_notify(NULL, &vnd_ind_attr->uuid, &vnd_value, strlen(vnd_value));
 
-		/* Vendor indication simulation */
-		if (simulate_vnd && vnd_ind_attr) {
-			if (indicating) {
-				continue;
-			}
-
-			ind_params.attr = vnd_ind_attr;
-			ind_params.func = indicate_cb;
-			ind_params.destroy = indicate_destroy;
-			ind_params.data = &indicating;
-			ind_params.len = sizeof(indicating);
-
-			if (bt_gatt_indicate(NULL, &ind_params) == 0) {
-				indicating = 1U;
-			}
-		}
 	}
 	return 0;
 }

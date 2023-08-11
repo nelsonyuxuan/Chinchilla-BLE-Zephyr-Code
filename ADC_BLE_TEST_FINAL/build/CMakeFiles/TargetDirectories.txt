@@ -196,10 +196,6 @@
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/zephyr/drivers/pinctrl/CMakeFiles/rebuild_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/zephyr/drivers/pinctrl/CMakeFiles/edit_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/zephyr/drivers/pinctrl/CMakeFiles/drivers__pinctrl.dir
-/Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/zephyr/drivers/sensor/CMakeFiles/rebuild_cache.dir
-/Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/zephyr/drivers/sensor/CMakeFiles/edit_cache.dir
-/Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/zephyr/drivers/sensor/nrf5/CMakeFiles/rebuild_cache.dir
-/Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/zephyr/drivers/sensor/nrf5/CMakeFiles/edit_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/zephyr/drivers/serial/CMakeFiles/rebuild_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/zephyr/drivers/serial/CMakeFiles/edit_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/zephyr/drivers/serial/CMakeFiles/drivers__serial.dir
@@ -258,8 +254,6 @@
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/modules/CMakeFiles/edit_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/CMakeFiles/rebuild_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/CMakeFiles/edit_cache.dir
-/Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/sensor/CMakeFiles/rebuild_cache.dir
-/Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/sensor/CMakeFiles/edit_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/mpsl/CMakeFiles/rebuild_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/mpsl/CMakeFiles/edit_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/mpsl/clock_control/CMakeFiles/rebuild_cache.dir
@@ -268,9 +262,6 @@
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/mpsl/flash_sync/CMakeFiles/rebuild_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/mpsl/flash_sync/CMakeFiles/edit_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/mpsl/flash_sync/CMakeFiles/..__nrf__drivers__mpsl__flash_sync.dir
-/Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/mpsl/temp_nrf5/CMakeFiles/rebuild_cache.dir
-/Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/mpsl/temp_nrf5/CMakeFiles/edit_cache.dir
-/Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/mpsl/temp_nrf5/CMakeFiles/..__nrf__drivers__mpsl__temp_nrf5.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/hw_cc310/CMakeFiles/rebuild_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/hw_cc310/CMakeFiles/edit_cache.dir
 /Users/nelsonwu/Library/CloudStorage/OneDrive-Personal/FridmanLab/Vestibular_Stimulation/nRFConnectApp/ADC_BLE_TEST_FINAL/build/modules/nrf/drivers/entropy/CMakeFiles/rebuild_cache.dir
